@@ -1,18 +1,12 @@
 #summary Overview of the tasks we need to get done
 
 = The Basic Plan =
-
-  1.  Basic GUI
-
-  2.  Figure out how to use OpenMCR and separate out the parts of the application we need
-
-  3.  Server-side implementation of OpenMCR to test the GUI
-
-  4.  Get a basic phone port set up; handle dependency issues
-
-  5.  Test the phone port and look for potential points of optimization
-
-  6.  Add usability features: e.g., save/e-mail the recording
+  #  Basic GUI
+  #  Figure out how to use OpenMCR and separate out the parts of the application we need
+  #  Server-side implementation of OpenMCR to test the GUI
+  #  Get a basic phone port set up; handle dependency issues
+  #  Test the phone port and look for potential points of optimization
+  #  Add usability features: e.g., save/e-mail the recording
 
 = Optional, depending on results and progress =
   * Look into doing feature recognition on the phone & other half on server
