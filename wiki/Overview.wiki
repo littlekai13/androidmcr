@@ -3,10 +3,15 @@
 = The Basic Plan =
 
   1.  Basic GUI
+
   2.  Figure out how to use OpenMCR and separate out the parts of the application we need
+
   3.  Server-side implementation of OpenMCR to test the GUI
+
   4.  Get a basic phone port set up; handle dependency issues
+
   5.  Test the phone port and look for potential points of optimization
+
   6.  Add usability features: e.g., save/e-mail the recording
 
 = Optional, depending on results and progress =
