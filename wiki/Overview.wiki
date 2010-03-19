@@ -11,6 +11,7 @@
 = Optional, depending on results and progress =
   * Look into doing feature recognition on the phone & other half on server
   * Compare beat of playing music to beat of MIDI
+  * Make a super fancy looking GUI
 
 = Current Progress =
   * Adrienne currently working on basic GUI
