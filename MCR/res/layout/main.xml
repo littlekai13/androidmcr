@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent" 
               android:layout_height="fill_parent"
               android:orientation="vertical" 
-              android:background="@drawable/background" >
-    <TextView android:id="@+id/text"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/hello" />
-    <Button android:id="@+id/butt_new_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="play from new photo" />
-    <Button android:id="@+id/butt_photo_lib"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="play from photo library" />
-    <Button android:id="@+id/butt_saved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="play saved music" />
-    <Button android:id="@+id/butt_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="share music" />
-</LinearLayout>
+              android:background="@drawable/background" 
+              android:padding="7dip">
+   
+	<TableLayout android:id="@+id/row1"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1">			    
+    	
+    	<TableRow android:layout_weight="1">
+    		<Button android:id="@+id/butt_new_photo"
+        		    android:layout_width="fill_parent"
+            		android:layout_height="wrap_content"
+            		android:layout_weight="1"
+           	 		android:text="play from new photo" />
+        </TableRow>
+        <TableRow android:layout_weight="1">
+    		<Button android:id="@+id/butt_photo_lib"
+            		android:layout_width="fill_parent"
+            		android:layout_height="wrap_content"
+            		android:layout_weight="1"
+            		android:text="play from photo library" />
+   		</TableRow>
+        <TableRow android:layout_weight="1">
+    		<Button android:id="@+id/butt_saved"
+            		android:layout_width="fill_parent"
+            		android:layout_height="wrap_content"
+            		android:layout_weight="1"
+            		android:text="play saved music" />
+        </TableRow>
+        <TableRow android:layout_weight="1">    		
+    		<Button android:id="@+id/butt_share"
+            		android:layout_width="fill_parent"
+            		android:layout_height="wrap_content"
+            		android:layout_weight="1"
+           	 		android:text="share music" />
+        </TableRow>    
+    </TableLayout>
+</RelativeLayout>
