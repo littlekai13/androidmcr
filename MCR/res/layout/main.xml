@@ -3,7 +3,7 @@
               android:layout_width="fill_parent" 
               android:layout_height="fill_parent"
               android:orientation="vertical" 
-              android:background="@drawable/stripes" 
+              android:background="@drawable/background" 
               android:padding="7dip"
               >
    
@@ -12,8 +12,16 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
 			android:layout_centerInParent="true"
-			>			    
-    	
+			>			
+			
+		<TableRow android:layout_weight="1" 
+			android:layout_width="wrap_content"
+			android:gravity="center_horizontal" >
+			<ImageView android:src="@drawable/piano_music"
+				android:paddingBottom="25dip"
+				android:gravity="center_horizontal" />
+		</TableRow>    
+		
     	<TableRow android:layout_weight="1">
     		<Button android:id="@+id/butt_new_photo"
         		    android:layout_width="0dip"
