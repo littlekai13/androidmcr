@@ -12,7 +12,9 @@
             </intent-filter>
         </activity>
 
-    </application>
+    
+<activity android:name=".GotPhoto" android:label="Play Music"></activity>
+</application>
     <uses-sdk android:minSdkVersion="4" />
 
 </manifest> 
