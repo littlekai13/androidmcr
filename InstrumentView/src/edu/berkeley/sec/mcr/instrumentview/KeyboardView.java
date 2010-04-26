@@ -19,12 +19,13 @@ public class KeyboardView extends View {
 		
 		canvas.drawColor(Color.WHITE);
 		
-		int[] pressedKeys = {10, 17};
+		int[] pressedWhiteKeys = {10, 17};
+		int[] pressedBlackKeys = {7, 29};
 		
-		drawKeyboard(canvas, 10f, 10f, canvas.getWidth()-20f, 7, pressedKeys);
+		drawKeyboard(canvas, 10f, 10f, canvas.getWidth()-20f, 7, pressedWhiteKeys, pressedBlackKeys);
 	}
 	
-	private void drawKeyboard(Canvas canvas, float offsetX, float offsetY, float width, int octaves, int[] pressedKeys) {
+	private void drawKeyboard(Canvas canvas, float offsetX, float offsetY, float width, int octaves, int[] pressedWhiteKeys, int[] pressedBlackKeys) {
 		float whiteKeyWidth = width / (octaves*7f);
 		float blackKeyWidth = whiteKeyWidth * 0.75f;
 		
@@ -35,11 +36,14 @@ public class KeyboardView extends View {
 			drawOctave(canvas, octave, offsetX, offsetY, whiteKeyWidth, blackKeyWidth, whiteKeyLength, blackKeyLength);
 		
 		Paint pressedPaint = new Paint();
-		pressedPaint.setColor(Color.BLUE);
+		pressedPaint.setColor(Color.RED);
 		pressedPaint.setStyle(Style.FILL);
 		
-		for(int key : pressedKeys)
+		for(int key : pressedWhiteKeys)
 			canvas.drawCircle(offsetX+(key+0.5f)*whiteKeyWidth, offsetY+whiteKeyLength*0.9f, whiteKeyWidth*0.45f, pressedPaint);
+
+		for(int key : pressedBlackKeys)
+			canvas.drawCircle(offsetX+(key+1)*whiteKeyWidth, offsetY+blackKeyLength*0.9f, blackKeyWidth*0.45f, pressedPaint);
 	}
 	
 	private void drawOctave(Canvas canvas, int num, float offsetX, float offsetY, float whiteKeyWidth, float blackKeyWidth, float whiteKeyLength, float blackKeyLength) {
