@@ -6,11 +6,39 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
+import android.util.Log;
 import android.view.View;
 
 public class KeyboardView extends View {
+	private static final int[][] pressedWhiteKeys = {
+			{10, 11},
+			{15, 17},
+			{8, 9}
+		};
+	private static final int[][] pressedBlackKeys = {
+			{8},
+			{15},
+			{10}
+		};
+
+	private int frame = 0;
+	
 	public KeyboardView(Context context) {
 		super(context);
+		
+		new Thread() {
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e) {
+						Log.e(KeyboardView.class.toString(), "Interrupted Exception", e);
+					}
+					KeyboardView.this.postInvalidate();
+				}
+			}
+		}.start();
 	}
 
 	@Override
@@ -19,10 +47,9 @@ public class KeyboardView extends View {
 		
 		canvas.drawColor(Color.WHITE);
 		
-		int[] pressedWhiteKeys = {10, 17};
-		int[] pressedBlackKeys = {7, 29};
+		drawKeyboard(canvas, 10f, 10f, canvas.getWidth()-20f, 7, pressedWhiteKeys[frame%pressedWhiteKeys.length], pressedBlackKeys[frame%pressedBlackKeys.length]);
 		
-		drawKeyboard(canvas, 10f, 10f, canvas.getWidth()-20f, 7, pressedWhiteKeys, pressedBlackKeys);
+		frame++;
 	}
 	
 	private void drawKeyboard(Canvas canvas, float offsetX, float offsetY, float width, int octaves, int[] pressedWhiteKeys, int[] pressedBlackKeys) {
