@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<script sheet="/home/csturton/Projects/cs294-phones/androidmcr/trunk/omr/example/twinkle.jpg">
+    <step name="SCORE"/>
+    <export path="/home/csturton/Projects/cs294-phones/androidmcr/trunk/audiveris/twinkle.xml"/>
+</script>
