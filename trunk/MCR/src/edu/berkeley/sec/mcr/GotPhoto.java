@@ -1,10 +1,15 @@
 package edu.berkeley.sec.mcr;
 
+import java.io.OutputStream;
+
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore.Audio.Media;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -70,15 +75,31 @@ public class GotPhoto extends Activity {
 		// playMusic.setType("audio/mid");
 		// startActivity(playMusic);
 		else {
-			// // What should we do if the user hasn't transformed anything yet?
+			// What should we do if the user hasn't transformed anything yet?
 		}
 	}
 
 	/*
 	 * This is called by the save button. Saves the midi file returned by
-	 * transform.
+	 * transform to the Media content provider.
 	 */
 	public void saveMusic(View v) {
+		ContentValues cv = new ContentValues(3);
+		cv.put(Media.DISPLAY_NAME, "transformed twinkle");
+		cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
+		cv.put(Media.MIME_TYPE, "audio/mid");
+
+		ContentResolver cr = getContentResolver();
+		Uri insertedUri = cr.insert(Media.EXTERNAL_CONTENT_URI, cv);
+
+		// How this is done really depends on how the midi file is stored
+		// up to this point.
+		try {
+			OutputStream os = cr.openOutputStream(insertedUri);
+
+		} catch (Exception ex) {
+
+		}
 
 	}
 
