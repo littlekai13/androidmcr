@@ -26,15 +26,25 @@
 		</TableRow>    
 		
     	<TableRow android:layout_weight="1">
-    		<ImageButton android:src="@drawable/local"
+    	
+    		<!--  <ImageButton android:src="@drawable/local"
     				android:id="@+id/transform_local"
     				android:background="@null"
-        		    android:layout_width="wrap_content"
+    				android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
             		android:layout_weight="1" 
             		android:paddingBottom="10dip"
             		android:layout_span="2" 
-            		android:onClick="startTransform"/>
+            		android:onClick="startTransform"/> -->
+            		<ImageButton android:src="@drawable/transform_drawable"
+            		android:id="@+id/transform_local"
+            		android:background="@null"
+    				android:layout_width="wrap_content"
+            		android:layout_height="wrap_content"
+            		android:layout_weight="1" 
+            		android:paddingBottom="10dip"
+            		android:layout_span="2" 
+            		android:onClick="startTransform"/> -->
         </TableRow>
         <TableRow android:layout_weight="1">
     		<ImageButton android:src="@drawable/cloud"
