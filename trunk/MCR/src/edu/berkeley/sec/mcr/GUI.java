@@ -15,6 +15,7 @@ public class GUI extends Activity {
 	}
 
 	static final int LOAD_PHOTO = 98;
+	static final int BROWSE_MUSIC = 99;
 
 	/*
 	 * This is called by the "Load photo from library" button. It calls up the
@@ -24,6 +25,16 @@ public class GUI extends Activity {
 		Intent picker = new Intent(Intent.ACTION_GET_CONTENT);
 		picker.setType("image/*");
 		startActivityForResult(picker, LOAD_PHOTO);
+	}
+
+	/*
+	 * This is called by the "Saved music" button. It calls up the music chooser
+	 * gallery. The resulting file is sent to onActivity Result.
+	 */
+	public void browseMusic(View v) {
+		Intent browser = new Intent(Intent.ACTION_GET_CONTENT);
+		browser.setType("audio/mid");
+		startActivityForResult(browser, BROWSE_MUSIC);
 	}
 
 	/*
@@ -40,6 +51,11 @@ public class GUI extends Activity {
 				Intent i = new Intent(GUI.this, GotPhoto.class);
 				i.putExtra("thePhoto", thePhoto);
 				startActivity(i);
+			}
+		}
+		if (requestCode == BROWSE_MUSIC) {
+			if (resultCode == RESULT_OK) {
+				// What to do here?
 			}
 		}
 	}

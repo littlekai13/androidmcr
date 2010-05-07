@@ -46,7 +46,8 @@
             		android:layout_height="wrap_content"
            			android:background="@null"
             		android:layout_weight="1"
-					android:paddingBottom="10dip" />
+					android:paddingBottom="10dip" 
+					android:onClick="browseMusic"/>
         </TableRow>
         <TableRow android:layout_weight="1">    		
     		<ImageButton android:id="@+id/butt_share"
