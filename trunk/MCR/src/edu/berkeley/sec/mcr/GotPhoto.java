@@ -14,12 +14,15 @@ import android.widget.ImageView;
  */
 public class GotPhoto extends Activity {
 
+	private Uri midiFileUri;
+
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gotphoto);
+		midiFileUri = null;
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
@@ -47,27 +50,40 @@ public class GotPhoto extends Activity {
 	}
 
 	/*
-	 * This is called by the Play button. It calls up the play music activity.
+	 * This is called by the Play button. Right now it just plays the hard-coded
+	 * twinkle file. Should do something smart depending on whether or not
+	 * Transform has already been called and there is a midi file to play.
 	 */
 	public void playMusic(View v) {
-		MediaPlayer mp = MediaPlayer.create(GotPhoto.this, R.raw.twinkle);
-		mp.start();
+		// Would be nice to get the built-in music player interface working,
+		// but I give up.
+
+		if (midiFileUri != null) {
+			MediaPlayer mp = MediaPlayer.create(GotPhoto.this, midiFileUri);
+			mp.start();
+		}
+
+		// No idea why the ACTION_VIEW works in GUI.java, but not here.
+		// if (midiFileUri != null) {
+		// Intent playMusic = new Intent(Intent.ACTION_VIEW);
+		// playMusic.setData(midiFileUri);
+		// playMusic.setData(Uri
+		// .parse("android.resource://edu.berkeley.sec.mcr/raw/twinkle"));
+		// playMusic.setType("audio/mid");
+		// startActivity(playMusic);
+		else {
+			// // What should we do if the user hasn't transformed anything yet?
+		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == TRANS_LOCAL) {
 			if (resultCode == RESULT_OK) {
-				// Yay. Let user play music.
-				// Change the image to be the returned XML or marked-up sheet
-				// music.
-				Bundle extras = data.getExtras();
-				Uri musicXMLURI = (Uri) extras.get("musicXMLSheet");
-				ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
-				i.setImageURI(musicXMLURI);
+				GotPhoto.this.midiFileUri = data.getData();
+
 			} else if (resultCode == RESULT_CANCELED) {
 				// Crap.
 			}
 		}
 	}
-
 }
