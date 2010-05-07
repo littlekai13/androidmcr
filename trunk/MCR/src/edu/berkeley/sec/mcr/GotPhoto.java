@@ -49,9 +49,8 @@ public class GotPhoto extends Activity {
 	}
 
 	/*
-	 * This is called by the Play button. Right now it just plays the hard-coded
-	 * twinkle file. Should do something smart depending on whether or not
-	 * Transform has already been called and there is a midi file to play.
+	 * This is called by the Play button. Plays the midi file returned by
+	 * transform.
 	 */
 	public void playMusic(View v) {
 		// Would be nice to get the built-in music player interface working,
@@ -73,6 +72,14 @@ public class GotPhoto extends Activity {
 		else {
 			// // What should we do if the user hasn't transformed anything yet?
 		}
+	}
+
+	/*
+	 * This is called by the save button. Saves the midi file returned by
+	 * transform.
+	 */
+	public void saveMusic(View v) {
+
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
