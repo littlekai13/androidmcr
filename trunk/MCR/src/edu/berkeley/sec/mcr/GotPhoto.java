@@ -15,6 +15,7 @@ import android.widget.ImageView;
 public class GotPhoto extends Activity {
 
 	private Uri midiFileUri;
+	private Uri musicPhotoUri;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -26,11 +27,11 @@ public class GotPhoto extends Activity {
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
-		Uri URI = (Uri) extras.get("thePhoto");
+		musicPhotoUri = (Uri) extras.get("thePhoto");
 
 		// Set the photo
 		ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
-		i.setImageURI(URI);
+		i.setImageURI(musicPhotoUri);
 
 		// To get the actual image data:
 		// AssetFileDescriptor thePhoto =
@@ -41,11 +42,9 @@ public class GotPhoto extends Activity {
 
 	// Called when Transform - Local button is clicked
 	public void startTransform(View v) {
-		// This does nothing. Wanted to make it look selected. Not important.
-		// ImageButton ib = (ImageButton)
-		// this.findViewById(R.id.transform_local);
-		// ib.setSelected(true);
+
 		Intent transform = new Intent(GotPhoto.this, TransformLocal.class);
+		transform.setData(musicPhotoUri);
 		startActivityForResult(transform, TRANS_LOCAL);
 	}
 
@@ -80,6 +79,9 @@ public class GotPhoto extends Activity {
 		if (requestCode == TRANS_LOCAL) {
 			if (resultCode == RESULT_OK) {
 				GotPhoto.this.midiFileUri = data.getData();
+				// It would be cool to change the sheet_music image to be
+				// something
+				// that looked parsed in some way.
 
 			} else if (resultCode == RESULT_CANCELED) {
 				// Crap.
