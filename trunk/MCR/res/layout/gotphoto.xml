@@ -52,7 +52,8 @@
             		android:layout_height="wrap_content"
             		android:layout_gravity="right"
             		android:paddingRight="5dip"
-            		android:layout_weight="1" />
+            		android:layout_weight="1" 
+            		android:onClick="playMusic"/>
             <ImageButton android:src="@drawable/save"
     				android:background="@null"
         		    android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package edu.berkeley.sec.mcr;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -42,8 +43,15 @@ public class GotPhoto extends Activity {
 		// this.findViewById(R.id.transform_local);
 		// ib.setSelected(true);
 		Intent transform = new Intent(GotPhoto.this, TransformLocal.class);
-		// picker.setType("image/*");
 		startActivityForResult(transform, TRANS_LOCAL);
+	}
+
+	/*
+	 * This is called by the Play button. It calls up the play music activity.
+	 */
+	public void playMusic(View v) {
+		MediaPlayer mp = MediaPlayer.create(GotPhoto.this, R.raw.twinkle);
+		mp.start();
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
