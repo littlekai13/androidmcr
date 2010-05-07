@@ -53,9 +53,14 @@ public class GUI extends Activity {
 				startActivity(i);
 			}
 		}
+		// Go to nice music player.
 		if (requestCode == BROWSE_MUSIC) {
 			if (resultCode == RESULT_OK) {
-				// What to do here?
+				Uri midiFile = data.getData();
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				// i.setType("audio");
+				i.setData(midiFile);
+				startActivity(i);
 			}
 		}
 	}
