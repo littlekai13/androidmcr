@@ -46,7 +46,7 @@
             		android:layout_span="2" 
             		android:onClick="startTransform"/> -->
         </TableRow>
-        <TableRow android:layout_weight="1">
+        <!-- <TableRow android:layout_weight="1">
     		<ImageButton android:src="@drawable/cloud"
     				android:background="@null"
         		    android:layout_width="wrap_content"
@@ -54,9 +54,9 @@
             		android:layout_weight="1" 
             		android:paddingBottom="10dip"
             		android:layout_span="2" />
-        </TableRow>    
+        </TableRow> -->    
         <TableRow android:layout_weight="1">
-    		<ImageButton android:src="@drawable/play"
+			<ImageButton android:src="@drawable/play_drawable"
     				android:background="@null"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
@@ -64,6 +64,7 @@
             		android:paddingRight="5dip"
             		android:layout_weight="1" 
             		android:onClick="playMusic"/>
+            		
             <ImageButton android:src="@drawable/save"
     				android:background="@null"
         		    android:layout_width="wrap_content"
