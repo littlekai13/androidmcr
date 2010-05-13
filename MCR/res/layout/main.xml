@@ -32,7 +32,7 @@
         </TableRow> -->
         <TableRow android:layout_weight="1">
     		<ImageButton android:id="@+id/butt_photo_lib"
-    				android:src="@drawable/loadlib"
+    				android:src="@drawable/loadlib_drawable"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
            			android:background="@null"
@@ -41,8 +41,8 @@
 					android:onClick="loadPhoto" />
         </TableRow>
         <TableRow android:layout_weight="1">
-    		<ImageButton android:id="@+id/butt_saved"
-    				android:src="@drawable/saved"
+    		<ImageButton android:src="@drawable/saved_drawable"
+    				android:id="@+id/butt_saved"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
            			android:background="@null"
@@ -52,12 +52,13 @@
         </TableRow>
         <TableRow android:layout_weight="1">    		
     		<ImageButton android:id="@+id/butt_share"
-    				android:src="@drawable/share"
+    				android:src="@drawable/share_drawable"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
            			android:background="@null"
             		android:layout_weight="1"
 					android:paddingBottom="10dip" />
+		
         </TableRow>    
     </TableLayout>
 </RelativeLayout>
