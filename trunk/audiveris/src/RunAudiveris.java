@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Date;
 import javax.servlet.ServletException;
@@ -16,14 +18,13 @@ public class RunAudiveris extends HttpServlet {
     }
     
     private void writeScript() {
-        String jpgPath = "/Users/apf/Documents/projects/music/repo/trunk/omr/example/twinkle.jpg";
-        String midiPath = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/twinkle.mid";
+        String jpgPath = "/Users/apf/Documents/projects/music/repo/trunk/omr/example/example.png";
+        String midiPath = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/example.mid";
         String writeOut = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<script sheet=\""+jpgPath+"\">\n" +
             "<step name=\"SCORE\"/>\n" +
             "<midi path=\""+midiPath+"\"/>\n" +
             "</script>\n";
-        
         try {
             FileWriter fstream = new FileWriter("/Users/apf/Documents/projects/music/repo/trunk/audiveris/run.script");
             BufferedWriter out = new BufferedWriter(fstream);
@@ -34,15 +35,31 @@ public class RunAudiveris extends HttpServlet {
         }
     }
 
+    private void executeAudiveris() {
+        try {
+            String line = null;
+            Process p = Runtime.getRuntime().exec("/Users/apf/Documents/projects/music/repo/trunk/audiveris/audiveris-launch.sh");
+            BufferedReader stdInput = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+            while ((line = stdInput.readLine()) != null) {
+                System.err.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+    }
+    
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    
-	    // Run Audiveris
+	    // Write the run.script file
         writeScript();
-        String[] my_args = {"-batch", "-script", "/Users/apf/Documents/projects/music/repo/trunk/audiveris/run.script"};
-        omr.Main.main(my_args);     
-	    
-	    // Set up the page
-	    res.setContentType("text/html");
+        
+        // Execute Audiveris
+        //executeAudiveris();
+        
+        // Set up the page
+        res.setContentType("text/html");
         PrintWriter out = res.getWriter();
         out.println("<html><head>");
         out.println("<title>TestServlet</title>");
@@ -51,8 +68,21 @@ public class RunAudiveris extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
 
+        try {
+            String line = null;
+            Process p = Runtime.getRuntime().exec("/Users/apf/Documents/projects/music/repo/trunk/audiveris/audiveris-launch.sh /Users/apf/Documents/projects/music/repo/trunk/audiveris/");
+            BufferedReader stdInput = new BufferedReader(
+                    new InputStreamReader(p.getInputStream()));
+            while ((line = stdInput.readLine()) != null) {
+                out.print(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        
         // Finish up
-        out.println("Ran Audiveris");
+        out.println("doo doo doo");
         out.println("</body></html>");
         out.close();
 	}
