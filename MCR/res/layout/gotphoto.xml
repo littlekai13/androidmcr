@@ -36,7 +36,7 @@
             		android:paddingBottom="10dip"
             		android:layout_span="2" 
             		android:onClick="startTransform"/> -->
-            		<ImageButton android:src="@drawable/transform_drawable"
+            		<ImageButton android:src="@drawable/read"
             		android:id="@+id/transform_local"
             		android:background="@null"
     				android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
             		android:layout_gravity="right"
-            		android:paddingRight="5dip"
+            		android:paddingRight="20dip"
             		android:layout_weight="1" 
             		android:onClick="playMusic"/>
             		

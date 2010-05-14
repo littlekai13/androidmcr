@@ -48,7 +48,7 @@ public class GotPhoto extends Activity {
 	// Called when Transform - Local button is clicked
 	public void startTransform(View v) {
 
-		Intent transform = new Intent(GotPhoto.this, TransformLocal.class);
+		Intent transform = new Intent(GotPhoto.this, Transform.class);
 		transform.setData(musicPhotoUri);
 		startActivityForResult(transform, TRANS_LOCAL);
 	}

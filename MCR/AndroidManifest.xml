@@ -12,10 +12,8 @@
     		</intent-filter>
         </activity>
 
-    
 		<activity android:name=".GotPhoto" android:label="Play Music"></activity>
-		<activity android:name=".TransformLocal" android:label="Read Sheet Music"></activity>
-		<activity android:name=".CameraView" android:label="Capture Sheet Music"></activity>
+		<activity android:name=".Transform" android:label="Read Sheet Music"></activity>
 		
 	</application>
     <uses-sdk android:minSdkVersion="4" />
