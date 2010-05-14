@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RunAudiveris extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final String serverPath = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/";
        
     public RunAudiveris() {
         super();
@@ -19,14 +20,14 @@ public class RunAudiveris extends HttpServlet {
     
     private void writeScript() {
         String jpgPath = "/Users/apf/Documents/projects/music/repo/trunk/omr/example/example.png";
-        String midiPath = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/example.mid";
+        String midiPath = serverPath + "example.mid";
         String writeOut = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<script sheet=\""+jpgPath+"\">\n" +
             "<step name=\"SCORE\"/>\n" +
             "<midi path=\""+midiPath+"\"/>\n" +
             "</script>\n";
         try {
-            FileWriter fstream = new FileWriter("/Users/apf/Documents/projects/music/repo/trunk/audiveris/run.script");
+            FileWriter fstream = new FileWriter(serverPath+"run.script");
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(writeOut);
             out.close();
@@ -38,16 +39,10 @@ public class RunAudiveris extends HttpServlet {
     private void executeAudiveris() {
         try {
             String line = null;
-            Process p = Runtime.getRuntime().exec("/Users/apf/Documents/projects/music/repo/trunk/audiveris/audiveris-launch.sh");
-            BufferedReader stdInput = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));
-            while ((line = stdInput.readLine()) != null) {
-                System.err.println(line);
-            }
+            Process p = Runtime.getRuntime().exec(serverPath + "audiveris-launch.sh " + serverPath);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
     }
     
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -56,7 +51,7 @@ public class RunAudiveris extends HttpServlet {
         writeScript();
         
         // Execute Audiveris
-        //executeAudiveris();
+        executeAudiveris();
         
         // Set up the page
         res.setContentType("text/html");
@@ -67,22 +62,11 @@ public class RunAudiveris extends HttpServlet {
                     "'Lucida Sans Unicode';font-size: 13px; }</style>");
         out.println("</head>");
         out.println("<body>");
-
-        try {
-            String line = null;
-            Process p = Runtime.getRuntime().exec("/Users/apf/Documents/projects/music/repo/trunk/audiveris/audiveris-launch.sh /Users/apf/Documents/projects/music/repo/trunk/audiveris/");
-            BufferedReader stdInput = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));
-            while ((line = stdInput.readLine()) != null) {
-                out.print(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         
+        // File location
+        out.println("File is at: " + serverPath + "/example.mid");
         
         // Finish up
-        out.println("doo doo doo");
         out.println("</body></html>");
         out.close();
 	}
