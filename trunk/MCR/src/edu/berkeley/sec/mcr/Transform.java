@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
-public class TransformLocal extends Activity {
+public class Transform extends Activity {
 
 	/** Called when the activity is first created. */
 	@Override
