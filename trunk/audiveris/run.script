@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<script sheet="/Users/apf/Documents/projects/music/repo/trunk/omr/example/example.png">
+<step name="SCORE"/>
+<midi path="/Users/apf/Documents/projects/music/repo/trunk/audiveris/example.mid"/>
+</script>

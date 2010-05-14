@@ -19,7 +19,7 @@ public class RunAudiveris extends HttpServlet {
     }
     
     private void writeScript() {
-        String jpgPath = serverPath + "/example.png";
+        String jpgPath = serverPath + "example.png";
         String midiPath = serverPath + "example.mid";
         String writeOut = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<script sheet=\""+jpgPath+"\">\n" +
@@ -65,7 +65,7 @@ public class RunAudiveris extends HttpServlet {
         out.println("<body>");
         
         // File location
-        out.println("File is at: " + serverPath + "/example.mid <br />");
+        out.println("File is at: " + serverPath + "example.mid <br />");
         out.println("HELLOOOO");
         
         // Finish up
