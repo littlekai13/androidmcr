@@ -19,7 +19,7 @@ public class RunAudiveris extends HttpServlet {
     }
     
     private void writeScript() {
-        String jpgPath = "/Users/apf/Documents/projects/music/repo/trunk/omr/example/example.png";
+        String jpgPath = serverPath + "/example.png";
         String midiPath = serverPath + "example.mid";
         String writeOut = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<script sheet=\""+jpgPath+"\">\n" +
@@ -51,10 +51,10 @@ public class RunAudiveris extends HttpServlet {
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    // Write the run.script file
-        writeScript();
+        //writeScript();
         
         // Execute Audiveris
-        executeAudiveris();
+        //executeAudiveris();
         
         // Set up the page
         res.setContentType("text/html");
