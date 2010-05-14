@@ -46,7 +46,10 @@ public class RunAudiveris extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-	    
+	    // GET NOT SUPPORTED FOR MULTIPART FORMS
+	}
+
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    // Write the run.script file
         writeScript();
         
@@ -69,10 +72,6 @@ public class RunAudiveris extends HttpServlet {
         // Finish up
         out.println("</body></html>");
         out.close();
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 	}
 
 }
