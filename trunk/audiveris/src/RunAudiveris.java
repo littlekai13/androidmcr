@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RunAudiveris extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String serverPath = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/";
+	private static final String serverPath = "/home/apf/androidproj/repo/audiveris/";
        
     public RunAudiveris() {
         super();
