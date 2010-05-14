@@ -49,10 +49,10 @@ public class RunAudiveris extends HttpServlet {
 	    // GET NOT SUPPORTED FOR MULTIPART FORMS
 	    
 	    // Write the run.script file
-        //writeScript();
+        writeScript();
         
         // Execute Audiveris
-        //executeAudiveris();
+        executeAudiveris();
         
         // Set up the page
         res.setContentType("text/html");
@@ -65,7 +65,7 @@ public class RunAudiveris extends HttpServlet {
         out.println("<body>");
         
         // File location
-        //out.println("File is at: " + serverPath + "/example.mid");
+        out.println("File is at: " + serverPath + "/example.mid <br />");
         out.println("HELLOOOO");
         
         // Finish up
