@@ -1,4 +1,4 @@
-lass <code>Audiveris</code> is simply the entry point to OMR, which
+/** class <code>Audiveris</code> is simply the entry point to OMR, which
  * delegates the call to {@link omr.Main#main}.
  *
  * @author Herv&eacute; Bitteur
