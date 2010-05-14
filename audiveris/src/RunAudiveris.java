@@ -47,6 +47,30 @@ public class RunAudiveris extends HttpServlet {
     
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    // GET NOT SUPPORTED FOR MULTIPART FORMS
+	    
+	    // Write the run.script file
+        //writeScript();
+        
+        // Execute Audiveris
+        //executeAudiveris();
+        
+        // Set up the page
+        res.setContentType("text/html");
+        PrintWriter out = res.getWriter();
+        out.println("<html><head>");
+        out.println("<title>TestServlet</title>");
+        out.println("\t<style>body { font-family: 'Lucida Grande', " +
+                    "'Lucida Sans Unicode';font-size: 13px; }</style>");
+        out.println("</head>");
+        out.println("<body>");
+        
+        // File location
+        //out.println("File is at: " + serverPath + "/example.mid");
+        out.println("HELLOOOO");
+        
+        // Finish up
+        out.println("</body></html>");
+        out.close();
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
