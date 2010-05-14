@@ -1,11 +1,13 @@
 package edu.berkeley.sec.mcr;
 
+import java.io.FileNotFoundException;
 import java.io.OutputStream;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,20 +39,26 @@ public class GotPhoto extends Activity {
 		// Set the photo
 		ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
 		i.setImageURI(musicPhotoUri);
-
-		// To get the actual image data:
-		// AssetFileDescriptor thePhoto =
-		// getContentResolver().openAssetFileDescriptor(URI, "r");
 	}
 
 	static final int TRANS_LOCAL = 99;
 
-	// Called when Transform - Local button is clicked
+	// Called when Read button is clicked
 	public void startTransform(View v) {
 
-		Intent transform = new Intent(GotPhoto.this, Transform.class);
-		transform.setData(musicPhotoUri);
-		startActivityForResult(transform, TRANS_LOCAL);
+	    try {
+            AssetFileDescriptor thePhoto =
+                getContentResolver().openAssetFileDescriptor(musicPhotoUri, "r");
+            
+            
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+	    
+		//Intent transform = new Intent(GotPhoto.this, Transform.class);
+		//transform.setData(musicPhotoUri);
+		//startActivityForResult(transform, TRANS_LOCAL);
 	}
 
 	/*
