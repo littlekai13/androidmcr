@@ -1,19 +1,24 @@
 package edu.berkeley.sec.mcr;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -37,6 +42,7 @@ public class GotPhoto extends Activity {
 
 	private Uri midiFileUri;
 	private Uri musicPhotoUri;
+	private String hi = "Hello";
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -87,8 +93,24 @@ public class GotPhoto extends Activity {
 	                } else {
 	                    Log.v("Debug","File not found "+ imageFile.getAbsolutePath());
 	                }
+	                
+	                // Download the MIDI file from the response
+	                URL url = new URL("http://gradgrind.erso.berkeley.edu/midi/example_1701664456.png.mid");
+	                File midiFile = new File("/data/data/edu.berkeley.sec.mcr/example_650415305.png.mid");
+	                URLConnection ucon = url.openConnection();
+	                InputStream is = ucon.getInputStream();
+	                BufferedInputStream bis = new BufferedInputStream(is);
+	                ByteArrayBuffer baf = new ByteArrayBuffer(50);
+	                int c = 0;
+	                while((c = bis.read()) != -1) {
+	                    baf.append((byte) c);
+	                }
+	                FileOutputStream fos = new FileOutputStream(midiFile);
+	                fos.write(baf.toByteArray());
+	                fos.close();
+	                midiFileUri = Uri.fromFile(midiFile);
 	            } catch (Exception e) {
-	                Log.v("Debug",e.getMessage());
+	                Log.v("Debug","EXCEPTION! " + e.getMessage());
                     e.printStackTrace();
                 }
 	            mHandler.post(mUpdateGUI);
@@ -104,7 +126,6 @@ public class GotPhoto extends Activity {
     };
     private void updateGUI() {
         // update the UI
-        Log.v("Debug","Done transforming!");
     }
 
 	/*
@@ -116,6 +137,7 @@ public class GotPhoto extends Activity {
 		// but I give up.
 
 		if (midiFileUri != null) {
+		    Log.v("Debug",midiFileUri.toString());
 			MediaPlayer mp = MediaPlayer.create(GotPhoto.this, midiFileUri);
 			mp.start();
 		}
@@ -130,6 +152,7 @@ public class GotPhoto extends Activity {
 		// startActivity(playMusic);
 		else {
 			// What should we do if the user hasn't transformed anything yet?
+		    Log.v("Debug","SOMETHING WENT HORRIBLY WRONG");
 		}
 	}
 
