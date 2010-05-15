@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 /**
@@ -60,8 +61,7 @@ public class GotPhoto extends Activity {
 		ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
 
 		try {
-			InputStream is = getContentResolver()
-					.openInputStream(musicPhotoUri);
+			InputStream is = getContentResolver().openInputStream(musicPhotoUri);
 
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
@@ -163,6 +163,10 @@ public class GotPhoto extends Activity {
 
 	private void updateGUI() {
 		// update the UI
+	    ImageButton play = (ImageButton) this.findViewById(R.id.play);
+	    ImageButton save = (ImageButton) this.findViewById(R.id.savetodisk);
+	    play.setImageResource(R.drawable.play_drawable);
+	    save.setImageResource(R.drawable.savetodisk_drawable);
 	}
 
 	/*
