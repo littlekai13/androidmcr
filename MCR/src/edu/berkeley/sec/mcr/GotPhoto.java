@@ -43,7 +43,7 @@ public class GotPhoto extends Activity {
 	private Uri midiFileUri;
 	private FileDescriptor fd;
 	private Uri musicPhotoUri;
-	private String hi = "Hello";
+	private boolean readPressed;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -51,7 +51,7 @@ public class GotPhoto extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gotphoto);
-		midiFileUri = null;
+		readPressed = false;
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
@@ -59,20 +59,15 @@ public class GotPhoto extends Activity {
 
 		// Set the photo
 		ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
-
 		try {
 			InputStream is = getContentResolver().openInputStream(musicPhotoUri);
-
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
-
 			Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
 
 			// hard-coded in ImageView width from gotphoto.xml
 			int scale = Math.round(opts.outWidth / 200);
-
 			opts = new BitmapFactory.Options();
-
 			opts.inSampleSize = scale;
 			is = getContentResolver().openInputStream(musicPhotoUri);
 			bmp = BitmapFactory.decodeStream(is, null, opts);
@@ -85,7 +80,11 @@ public class GotPhoto extends Activity {
 
 	// Called when "Read music" button is clicked
 	public void startTransform(View v) {
-
+	    if (readPressed == true) { return; }
+	    else { readPressed = true; }
+	    ImageButton read = (ImageButton) this.findViewById(R.id.transform_local);
+        read.setImageResource(R.drawable.read_gray);
+	    
 		Thread t = new Thread() {
 			public void run() {
 				try {
@@ -174,6 +173,7 @@ public class GotPhoto extends Activity {
 	 * transform.
 	 */
 	public void playMusic(View v) {
+	    if (readPressed == false) { return; }
 		if (fd != null) {
 			MediaPlayer mp = new MediaPlayer();
 			try {
@@ -204,6 +204,8 @@ public class GotPhoto extends Activity {
 	 * transform to the Media content provider.
 	 */
 	public void saveMusic(View v) {
+	    if (readPressed == false) { return; }
+	    
 		ContentValues cv = new ContentValues(3);
 		cv.put(Media.DISPLAY_NAME, "transformed twinkle");
 		cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
