@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.res.AssetFileDescriptor;
@@ -45,6 +46,7 @@ public class GotPhoto extends Activity {
 	private FileDescriptor fd;
 	private Uri musicPhotoUri;
 	private boolean readPressed;
+	private boolean broken;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -53,6 +55,7 @@ public class GotPhoto extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gotphoto);
 		readPressed = false;
+		broken = false;
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
@@ -75,14 +78,17 @@ public class GotPhoto extends Activity {
 			bmp = BitmapFactory.decodeStream(is, null, opts);
 			i.setImageBitmap(bmp);
 		} catch (FileNotFoundException ex) {
-			// Should probably display some icon here.
+			readPressed = true;
+			broken = true;
+			new AlertDialog.Builder(this)
+			    .setMessage("Unable to load that photo :(");
 		}
 
 	}
 
 	// Called when "Read music" button is clicked
 	public void startTransform(View v) {
-		if (readPressed == true) {
+		if (readPressed == true || broken == true) {
 			return;
 		} else {
 			readPressed = true;
@@ -128,6 +134,7 @@ public class GotPhoto extends Activity {
 					} else {
 						Log.v("Debug", "File not found "
 								+ imageFile.getAbsolutePath());
+						throw new Exception();
 					}
 
 					// Download the MIDI file from the response
@@ -149,6 +156,7 @@ public class GotPhoto extends Activity {
 					midiFileUri = Uri.fromFile(midiFile);
 					fd = openFileInput("example_650415305.png.mid").getFD();
 				} catch (Exception e) {
+				    broken = true;
 					Log.v("Debug", "EXCEPTION! " + e.getMessage());
 					e.printStackTrace();
 				}
@@ -180,9 +188,8 @@ public class GotPhoto extends Activity {
 	 * transform.
 	 */
 	public void playMusic(View v) {
-		if (readPressed == false) {
-			return;
-		}
+		if (readPressed == false || broken == true) { return; }
+		
 		if (fd != null) {
 			MediaPlayer mp = new MediaPlayer();
 			try {
@@ -216,9 +223,7 @@ public class GotPhoto extends Activity {
 	 */
 	public void saveMusic(View v) {
 
-		if (readPressed == false) {
-			return;
-		}
+		if (readPressed == false || broken == true) { return; }
 
 		if (fd != null) {
 
