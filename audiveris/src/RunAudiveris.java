@@ -66,7 +66,6 @@ public class RunAudiveris extends HttpServlet {
         
         // File location
         out.println("File is at: " + serverPath + "example.mid <br />");
-        out.println("HELLOOOO");
         
         // Finish up
         out.println("</body></html>");
