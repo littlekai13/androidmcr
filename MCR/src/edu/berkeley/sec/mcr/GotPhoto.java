@@ -83,9 +83,7 @@ public class GotPhoto extends Activity {
 
 	}
 
-	static final int TRANS_LOCAL = 99;
-
-	// Called when Read button is clicked
+	// Called when "Read music" button is clicked
 	public void startTransform(View v) {
 
 		Thread t = new Thread() {
@@ -123,8 +121,7 @@ public class GotPhoto extends Activity {
 										postData, postDataFiles);
 						Log.v("Debug", httpData.data);
 					} else {
-						Log.v("Debug", "File not found "
-								+ imageFile.getAbsolutePath());
+						Log.v("Debug", "File not found " + imageFile.getAbsolutePath());
 					}
 
 					// Download the MIDI file from the response
@@ -173,9 +170,6 @@ public class GotPhoto extends Activity {
 	 * transform.
 	 */
 	public void playMusic(View v) {
-		// Would be nice to get the built-in music player interface working,
-		// but I give up.
-
 		if (fd != null) {
 			MediaPlayer mp = new MediaPlayer();
 			try {
@@ -183,33 +177,19 @@ public class GotPhoto extends Activity {
 				mp.prepare();
 				mp.start();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				Log.v("Debug", "Illegal argument exception");
 				e.printStackTrace();
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
 				Log.v("Debug", "Illegal state exception");
 				e.printStackTrace();
 			} catch (IOException e) {
 				Log.v("Debug", "IOexception");
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
 				Log.v("Debug", "don't know why!?");
 				e.printStackTrace();
 			}
-			Log.v("Debug", "Done playing");
-		}
-
-		// No idea why the ACTION_VIEW works in GUI.java, but not here.
-		// if (midiFileUri != null) {
-		// Intent playMusic = new Intent(Intent.ACTION_VIEW);
-		// playMusic.setData(midiFileUri);
-		// playMusic.setData(Uri
-		// .parse("android.resource://edu.berkeley.sec.mcr/raw/twinkle"));
-		// playMusic.setType("audio/mid");
-		// startActivity(playMusic);
-		else {
+		} else {
 			// What should we do if the user hasn't transformed anything yet?
 			Log.v("Debug", "SOMETHING WENT HORRIBLY WRONG");
 		}
