@@ -16,7 +16,6 @@ public class GUI extends Activity {
 
 	static final int LOAD_PHOTO = 98;
 	static final int BROWSE_MUSIC = 99;
-	static final int TAKE_PHOTO = 97;
 
 	/*
 	 * This is called by the "Load photo from library" button. It calls up the
@@ -37,15 +36,6 @@ public class GUI extends Activity {
 		browser.setType("audio/mid");
 		startActivityForResult(browser, BROWSE_MUSIC);
 	}
-
-	/*
-	 * This is called by the "Take new photo" button. It calls up the camera.
-	 * The resulting photo is sent to onActivityResult.
-	 */
-	// public void takePhoto(View v) {
-	// Intent camera = new Intent(Intent.ACTION_CAMERA_BUTTON);
-	// startActivityForResult(camera, TAKE_PHOTO);
-	// }
 
 	/*
 	 * Called when the user picks a photo from the photo gallery. Passes the URL
@@ -72,13 +62,6 @@ public class GUI extends Activity {
 				i.setData(midiFile);
 				startActivity(i);
 			}
-		}
-		// Next step is transform the photo.
-		if (requestCode == TAKE_PHOTO) {
-			Uri thePhoto = data.getData();
-			Intent i = new Intent(GUI.this, GotPhoto.class);
-			i.putExtra("thePhoto", thePhoto);
-			startActivity(i);
 		}
 	}
 }
