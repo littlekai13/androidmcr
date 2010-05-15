@@ -87,10 +87,10 @@ public class RunAudiveris extends HttpServlet {
         out.println("\t<style>body { font-family: 'Lucida Grande', " +
                     "'Lucida Sans Unicode';font-size: 13px; }</style>");
         out.println("</head>");
-        out.println("<body>");
+        out.println("<body>"); 
         
         // File location
-        out.println("File is at: " + serverPath + "/example.mid");
+        out.println("File is at: " + serverPath + "example.mid");
         //out.println("HELLOOOO");
         
         // Finish up
