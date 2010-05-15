@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RunAudiveris extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String serverPath = "/home/apf/androidproj/repo/audiveris/";
+	private static final String serverPath = "/home/apf/androidmcr/audiveris/";
        
     public RunAudiveris() {
         super();
@@ -49,10 +49,10 @@ public class RunAudiveris extends HttpServlet {
 	    // GET NOT SUPPORTED FOR MULTIPART FORMS
 	    
 	    // Write the run.script file
-        //writeScript();
+        writeScript();
         
         // Execute Audiveris
-        //executeAudiveris();
+        executeAudiveris();
         
         // Set up the page
         res.setContentType("text/html");
