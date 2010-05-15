@@ -149,14 +149,14 @@ public class RunAudiveris extends HttpServlet {
 	        // Load the image
 	        String fileName = loadImage(req);
 	        if (fileName.equals("")) { throw new IOException(); }
-	        out.println("Uploaded file is at: " + IMGUPLOADPATH + fileName + "<br />");
 	        try {
 	            // Write out run.script
 	            writeScript(fileName);
 	            try {
 	                // Execute Audiveris
 	                executeAudiveris();
-	                out.println("Midi is at: " + MIDPATH + fileName + ".mid");
+	                String path = "http://gradgrind.erso.berkeley.edu/midi/" + fileName + ".mid";
+	                out.println("Midi is at: <a href=\""+path+"\">"+path+"</a>");
 	            } catch (IOException e) {
 	                out.println("Audiveris could not be run.");
 	                e.printStackTrace();
