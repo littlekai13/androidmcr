@@ -23,6 +23,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
 import android.view.View;
@@ -58,38 +59,53 @@ public class GotPhoto extends Activity {
 
 	// Called when Read button is clicked
 	public void startTransform(View v) {
-
-	    try {
-            AssetFileDescriptor thePhoto =
-                getContentResolver().openAssetFileDescriptor(musicPhotoUri, "r");
-            FileChannel orig = thePhoto.createInputStream().getChannel();
-            File imageFile = File.createTempFile("musicImages", ".jpg");
-            FileChannel tmpFile = new FileOutputStream(imageFile).getChannel();
-            
-            try { orig.transferTo(0, orig.size(), tmpFile); }
-            catch (IOException e) { throw e; }
-            finally { 
-                if (orig != null) orig.close();
-                if (tmpFile != null) tmpFile.close();
-            }
-          
-            HttpClient client = new DefaultHttpClient();
-            if (imageFile.exists()) {
-                Log.v("Debug", "Image file exists");
-                Map postData = new HashMap();
-                Map postDataFiles = new HashMap();
-                postDataFiles.put("file", imageFile);
-                HttpData httpData = HttpRequest.postRequest(client, "http://gradgrind.erso.berkeley.edu:8080/Audiveris/RunAudiveris", postData, postDataFiles);
-                Log.v("Debug",httpData.data);
-            } else {
-                Log.v("Debug","File not found "+ imageFile.getAbsolutePath());
-            }
-            
-        } catch (Exception e) {
-            Log.v("Debug",e.getMessage());
-            e.printStackTrace();
-        }
+	    
+	    Thread t = new Thread() {
+	        public void run() {
+	            try {
+	                // Get the image
+	                AssetFileDescriptor thePhoto =
+	                    getContentResolver().openAssetFileDescriptor(musicPhotoUri, "r");
+	                FileChannel orig = thePhoto.createInputStream().getChannel();
+	                File imageFile = File.createTempFile("musicImages", ".jpg");
+	                FileChannel tmpFile = new FileOutputStream(imageFile).getChannel();      
+	                try { orig.transferTo(0, orig.size(), tmpFile); }
+	                catch (IOException e) { throw e; }
+	                finally { 
+	                    if (orig != null) orig.close();
+	                    if (tmpFile != null) tmpFile.close();
+	                }   
+	                // Send it
+	                HttpClient client = new DefaultHttpClient();
+	                if (imageFile.exists()) {
+	                    Log.v("Debug", "Image file exists");
+	                    Map postData = new HashMap();
+	                    Map postDataFiles = new HashMap();
+	                    postDataFiles.put("file", imageFile);
+	                    HttpData httpData = HttpRequest.postRequest(client, "http://gradgrind.erso.berkeley.edu:8080/Audiveris/RunAudiveris", postData, postDataFiles);
+	                    Log.v("Debug",httpData.data);
+	                } else {
+	                    Log.v("Debug","File not found "+ imageFile.getAbsolutePath());
+	                }
+	            } catch (Exception e) {
+	                Log.v("Debug",e.getMessage());
+                    e.printStackTrace();
+                }
+	            mHandler.post(mUpdateGUI);
+	        }
+	    };
+	    t.start();
 	}
+	
+	// Threading for doing the HTTP POST in the background
+    final Handler mHandler = new Handler();
+    final Runnable mUpdateGUI = new Runnable() {
+        public void run() { updateGUI(); }
+    };
+    private void updateGUI() {
+        // update the UI
+        Log.v("Debug","Done transforming!");
+    }
 
 	/*
 	 * This is called by the Play button. Plays the midi file returned by
@@ -139,19 +155,5 @@ public class GotPhoto extends Activity {
 
 		}
 
-	}
-
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == TRANS_LOCAL) {
-			if (resultCode == RESULT_OK) {
-				GotPhoto.this.midiFileUri = data.getData();
-				// It would be cool to change the sheet_music image to be
-				// something
-				// that looked parsed in some way.
-
-			} else if (resultCode == RESULT_CANCELED) {
-				// Crap.
-			}
-		}
 	}
 }
