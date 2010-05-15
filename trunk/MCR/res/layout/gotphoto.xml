@@ -38,7 +38,8 @@
         </TableRow>
           
         <TableRow android:layout_weight="1">
-			<ImageButton android:src="@drawable/play_drawable"
+			<ImageButton android:src="@drawable/play_gray"
+					android:id="@+id/play"
     				android:background="@null"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
@@ -47,7 +48,8 @@
             		android:layout_weight="1" 
             		android:onClick="playMusic"/>
             		
-            <ImageButton android:src="@drawable/savetodisk_drawable"
+            <ImageButton android:src="@drawable/save_gray"
+            		android:id="@+id/savetodisk"
     				android:background="@null"
         		    android:layout_width="wrap_content"
             		android:layout_height="wrap_content"
