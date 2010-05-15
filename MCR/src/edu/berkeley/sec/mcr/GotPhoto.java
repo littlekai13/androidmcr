@@ -68,13 +68,15 @@ public class GotPhoto extends Activity {
 
 			Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
 
+			// hard-coded in ImageView width from gotphoto.xml
+			int scale = Math.round(opts.outWidth / 200);
+
 			opts = new BitmapFactory.Options();
-			int scale = 10;
+
 			opts.inSampleSize = scale;
 			is = getContentResolver().openInputStream(musicPhotoUri);
 			bmp = BitmapFactory.decodeStream(is, null, opts);
 			i.setImageBitmap(bmp);
-
 		} catch (FileNotFoundException ex) {
 			// Should probably display some icon here.
 		}
