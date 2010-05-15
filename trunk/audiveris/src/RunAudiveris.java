@@ -31,7 +31,7 @@ public class RunAudiveris extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_IMG_SIZE = 4*1024*1024;
 	private static final String EXECPATH = "/home/apf/androidmcr/audiveris/"; // SERVER
-    private static final String MIDPATH = "/home/apf/androidmcr/audiveris/midi/"; // SERVER
+    private static final String MIDPATH = "/var/www/midi/"; // SERVER
     private static final String IMGUPLOADPATH = "/home/apf/androidmcr/audiveris/uploads/"; // SERVER
 	//private static final String EXECPATH = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/"; // APF
 	//private static final String MIDPATH = "/Users/apf/Documents/projects/music/repo/trunk/audiveris/midi/"; // APF
