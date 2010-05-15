@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<script sheet="/home/apf/androidmcr/audiveris/uploads/musicImages44905_966591414.jpg">
+<script sheet="/Users/apf/Documents/projects/music/repo/trunk/audiveris/testandroid.png">
 <step name="SCORE"/>
-<midi path="/var/www/midi/musicImages44905_966591414.jpg.mid"/>
+<midi path="/Users/apf/Documents/projects/music/repo/trunk/audiveris/example.mid"/>
 </script>
