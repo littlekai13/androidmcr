@@ -61,7 +61,8 @@ public class GotPhoto extends Activity {
 		// Set the photo
 		ImageView i = (ImageView) this.findViewById(R.id.sheet_music);
 		try {
-			InputStream is = getContentResolver().openInputStream(musicPhotoUri);
+			InputStream is = getContentResolver()
+					.openInputStream(musicPhotoUri);
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inJustDecodeBounds = true;
 			Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
@@ -81,11 +82,15 @@ public class GotPhoto extends Activity {
 
 	// Called when "Read music" button is clicked
 	public void startTransform(View v) {
-	    if (readPressed == true) { return; }
-	    else { readPressed = true; }
-	    ImageButton read = (ImageButton) this.findViewById(R.id.transform_local);
-        read.setImageResource(R.drawable.read_gray);
-	    
+		if (readPressed == true) {
+			return;
+		} else {
+			readPressed = true;
+		}
+		ImageButton read = (ImageButton) this
+				.findViewById(R.id.transform_local);
+		read.setImageResource(R.drawable.read_gray);
+
 		Thread t = new Thread() {
 			public void run() {
 				try {
@@ -121,7 +126,8 @@ public class GotPhoto extends Activity {
 										postData, postDataFiles);
 						Log.v("Debug", httpData.data);
 					} else {
-						Log.v("Debug", "File not found " + imageFile.getAbsolutePath());
+						Log.v("Debug", "File not found "
+								+ imageFile.getAbsolutePath());
 					}
 
 					// Download the MIDI file from the response
@@ -163,10 +169,10 @@ public class GotPhoto extends Activity {
 
 	private void updateGUI() {
 		// update the UI
-	    ImageButton play = (ImageButton) this.findViewById(R.id.play);
-	    ImageButton save = (ImageButton) this.findViewById(R.id.savetodisk);
-	    play.setImageResource(R.drawable.play_drawable);
-	    save.setImageResource(R.drawable.savetodisk_drawable);
+		ImageButton play = (ImageButton) this.findViewById(R.id.play);
+		ImageButton save = (ImageButton) this.findViewById(R.id.savetodisk);
+		play.setImageResource(R.drawable.play_drawable);
+		save.setImageResource(R.drawable.savetodisk_drawable);
 	}
 
 	/*
@@ -174,7 +180,9 @@ public class GotPhoto extends Activity {
 	 * transform.
 	 */
 	public void playMusic(View v) {
-	    if (readPressed == false) { return; }
+		if (readPressed == false) {
+			return;
+		}
 		if (fd != null) {
 			MediaPlayer mp = new MediaPlayer();
 			try {
@@ -203,17 +211,43 @@ public class GotPhoto extends Activity {
 	/*
 	 * This is called by the save button. Saves the midi file returned by
 	 * transform to the Media content provider.
+	 * 
+	 * Still needs UI for changing name/title/etc.
 	 */
 	public void saveMusic(View v) {
 
-	    if (readPressed == false) { return; }
-	    
+		if (readPressed == false) {
+			return;
+		}
 
 		if (fd != null) {
+
+			// To add audio to content provider.
+			// First provide the meta data. (cv.put...)
+			// Then add the metadata to the CP (cr.insert(...))
+			// This returns a URI to the newly inserted record.
+			// You use that URI to add in the real data
+			// (cr.openOutputStream(insertedUri))
+			// That should do it.
+
+			// In general, anytime you access the contentresolver (i.e. the DB
+			// w/all the media),
+			// You reference your particular record by providing the URI to it
+			// as the first arg.
+
 			ContentValues cv = new ContentValues(3);
 			cv.put(Media.DISPLAY_NAME, "transformed twinkle");
 			cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
 			cv.put(Media.MIME_TYPE, "audio/mid");
+			// This seems to be necessary to keep cr.insert from failing. It
+			// should get overwriiten later in the try/catch block.
+
+			// Adrienne, here's why I think it's failing. I have to
+			// put in this fake data to keep it from crashing, andit should get
+			// overwritten
+			// in the try/catch, but it looks like it's throwing a filenotfound
+			// exception I think on the cr.openOutputStream(insertedUri) part.
+			// If you fix that, the rest of it might magically work.
 			cv.put(Media.DATA, "fake/data");
 
 			ContentResolver cr = getContentResolver();
@@ -223,9 +257,6 @@ public class GotPhoto extends Activity {
 				// Well that sucks. No new content entry.
 			} else {
 
-				// How this is done really depends on how the midi file is
-				// stored
-				// up to this point.
 				try {
 
 					FileInputStream fis = new FileInputStream(fd);
