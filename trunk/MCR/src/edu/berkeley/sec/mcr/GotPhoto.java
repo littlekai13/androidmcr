@@ -1,7 +1,19 @@
 package edu.berkeley.sec.mcr;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.nio.channels.FileChannel;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -12,6 +24,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore.Audio.Media;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -49,16 +62,33 @@ public class GotPhoto extends Activity {
 	    try {
             AssetFileDescriptor thePhoto =
                 getContentResolver().openAssetFileDescriptor(musicPhotoUri, "r");
+            FileChannel orig = thePhoto.createInputStream().getChannel();
+            File imageFile = File.createTempFile("musicImages", ".jpg");
+            FileChannel tmpFile = new FileOutputStream(imageFile).getChannel();
             
+            try { orig.transferTo(0, orig.size(), tmpFile); }
+            catch (IOException e) { throw e; }
+            finally { 
+                if (orig != null) orig.close();
+                if (tmpFile != null) tmpFile.close();
+            }
+          
+            HttpClient client = new DefaultHttpClient();
+            if (imageFile.exists()) {
+                Log.v("Debug", "Image file exists");
+                Map postData = new HashMap();
+                Map postDataFiles = new HashMap();
+                postDataFiles.put("file", imageFile);
+                HttpData httpData = HttpRequest.postRequest(client, "http://gradgrind.erso.berkeley.edu:8080/Audiveris/RunAudiveris", postData, postDataFiles);
+                Log.v("Debug",httpData.data);
+            } else {
+                Log.v("Debug","File not found "+ imageFile.getAbsolutePath());
+            }
             
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e) {
+            Log.v("Debug",e.getMessage());
             e.printStackTrace();
         }
-	    
-		//Intent transform = new Intent(GotPhoto.this, Transform.class);
-		//transform.setData(musicPhotoUri);
-		//startActivityForResult(transform, TRANS_LOCAL);
 	}
 
 	/*
