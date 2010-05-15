@@ -3,6 +3,7 @@ package edu.berkeley.sec.mcr;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -204,24 +205,51 @@ public class GotPhoto extends Activity {
 	 * transform to the Media content provider.
 	 */
 	public void saveMusic(View v) {
+
 	    if (readPressed == false) { return; }
 	    
-		ContentValues cv = new ContentValues(3);
-		cv.put(Media.DISPLAY_NAME, "transformed twinkle");
-		cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
-		cv.put(Media.MIME_TYPE, "audio/mid");
 
-		ContentResolver cr = getContentResolver();
-		Uri insertedUri = cr.insert(Media.EXTERNAL_CONTENT_URI, cv);
+		if (fd != null) {
+			ContentValues cv = new ContentValues(3);
+			cv.put(Media.DISPLAY_NAME, "transformed twinkle");
+			cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
+			cv.put(Media.MIME_TYPE, "audio/mid");
+			cv.put(Media.DATA, "fake/data");
 
-		// How this is done really depends on how the midi file is stored
-		// up to this point.
-		try {
-			OutputStream os = cr.openOutputStream(insertedUri);
+			ContentResolver cr = getContentResolver();
+			Uri insertedUri = cr.insert(Media.EXTERNAL_CONTENT_URI, cv);
 
-		} catch (Exception ex) {
+			if (insertedUri == null) {
+				// Well that sucks. No new content entry.
+			} else {
 
+				// How this is done really depends on how the midi file is
+				// stored
+				// up to this point.
+				try {
+
+					FileInputStream fis = new FileInputStream(fd);
+					BufferedInputStream bis = new BufferedInputStream(fis);
+
+					ByteArrayBuffer baf = new ByteArrayBuffer(50);
+					int c = 0;
+					while ((c = bis.read()) != -1) {
+						baf.append((byte) c);
+					}
+
+					OutputStream os = cr.openOutputStream(insertedUri);
+					os.write(baf.toByteArray());
+					os.flush();
+					os.close();
+
+				} catch (Exception ex) {
+					// Sucks to be here.
+					Log.v("Debug", "Couldn't write audio file");
+				}
+
+			}
+		} else {
+			Log.v("Debug", "User is trying to save w/o first transforming");
 		}
-
 	}
 }
