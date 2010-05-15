@@ -23,6 +23,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
@@ -41,6 +42,7 @@ import android.widget.ImageView;
 public class GotPhoto extends Activity {
 
 	private Uri midiFileUri;
+	private FileDescriptor fd;
 	private Uri musicPhotoUri;
 	private String hi = "Hello";
 
@@ -96,7 +98,7 @@ public class GotPhoto extends Activity {
 	                
 	                // Download the MIDI file from the response
 	                URL url = new URL("http://gradgrind.erso.berkeley.edu/midi/example_1701664456.png.mid");
-	                File midiFile = new File("/data/data/edu.berkeley.sec.mcr/example_650415305.png.mid");
+	                File midiFile = new File(getFilesDir() + "/example_650415305.png.mid");
 	                URLConnection ucon = url.openConnection();
 	                InputStream is = ucon.getInputStream();
 	                BufferedInputStream bis = new BufferedInputStream(is);
@@ -109,10 +111,12 @@ public class GotPhoto extends Activity {
 	                fos.write(baf.toByteArray());
 	                fos.close();
 	                midiFileUri = Uri.fromFile(midiFile);
+	                fd = openFileInput("example_650415305.png.mid").getFD();
 	            } catch (Exception e) {
 	                Log.v("Debug","EXCEPTION! " + e.getMessage());
                     e.printStackTrace();
                 }
+	            Log.v("Debug","Done with worker thread");
 	            mHandler.post(mUpdateGUI);
 	        }
 	    };
@@ -136,10 +140,29 @@ public class GotPhoto extends Activity {
 		// Would be nice to get the built-in music player interface working,
 		// but I give up.
 
-		if (midiFileUri != null) {
-		    Log.v("Debug",midiFileUri.toString());
-			MediaPlayer mp = MediaPlayer.create(GotPhoto.this, midiFileUri);
-			mp.start();
+		if (fd != null) {
+			MediaPlayer mp = new MediaPlayer();
+			try {
+                mp.setDataSource(fd);
+                mp.prepare();
+                mp.start();
+            } catch (IllegalArgumentException e) {
+                // TODO Auto-generated catch block
+                Log.v("Debug","Illegal argument exception");
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                Log.v("Debug","Illegal state exception");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.v("Debug","IOexception");
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (Exception e) {
+                Log.v("Debug","don't know why!?");
+                e.printStackTrace();
+            }
+            Log.v("Debug","Done playing");
 		}
 
 		// No idea why the ACTION_VIEW works in GUI.java, but not here.
