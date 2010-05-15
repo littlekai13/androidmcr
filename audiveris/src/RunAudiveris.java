@@ -74,10 +74,10 @@ public class RunAudiveris extends HttpServlet {
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    // Write the run.script file
-        //writeScript();
+        writeScript();
         
         // Execute Audiveris
-        //executeAudiveris();
+        executeAudiveris();
         
         // Set up the page
         res.setContentType("text/html");
@@ -90,8 +90,8 @@ public class RunAudiveris extends HttpServlet {
         out.println("<body>");
         
         // File location
-        //out.println("File is at: " + serverPath + "/example.mid");
-        out.println("HELLOOOO");
+        out.println("File is at: " + serverPath + "/example.mid");
+        //out.println("HELLOOOO");
         
         // Finish up
         out.println("</body></html>");
