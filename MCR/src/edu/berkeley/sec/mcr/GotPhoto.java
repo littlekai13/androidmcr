@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface.OnClickListener;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
 import android.view.View;
@@ -80,8 +82,13 @@ public class GotPhoto extends Activity {
 		} catch (FileNotFoundException ex) {
 			readPressed = true;
 			broken = true;
+			ImageButton read = (ImageButton) this
+                .findViewById(R.id.transform_local);
+			read.setImageResource(R.drawable.read_gray);
 			new AlertDialog.Builder(this)
-			    .setMessage("Unable to load that photo :(");
+			    .setMessage("Unable to load that photo :(")
+			    .setPositiveButton("OK", accept)
+			    .show();
 		}
 
 	}
@@ -121,7 +128,6 @@ public class GotPhoto extends Activity {
 					// Send it
 					HttpClient client = new DefaultHttpClient();
 					if (imageFile.exists()) {
-						Log.v("Debug", "Image file exists");
 						Map postData = new HashMap();
 						Map postDataFiles = new HashMap();
 						postDataFiles.put("file", imageFile);
@@ -159,9 +165,12 @@ public class GotPhoto extends Activity {
 				    broken = true;
 					Log.v("Debug", "EXCEPTION! " + e.getMessage());
 					e.printStackTrace();
+					mHandler.post(mBadError);
 				}
 				Log.v("Debug", "Done with worker thread");
-				mHandler.post(mUpdateGUI);
+				if (!broken) {
+				    mHandler.post(mUpdateGUI);
+				}
 			}
 		};
 		t.start();
@@ -174,14 +183,28 @@ public class GotPhoto extends Activity {
 			updateGUI();
 		}
 	};
+	final Runnable mBadError = new Runnable() {
+	    public void run() {
+	        badError();
+	    }
+	};
 
 	private void updateGUI() {
-		// update the UI
 		ImageButton play = (ImageButton) this.findViewById(R.id.play);
 		ImageButton save = (ImageButton) this.findViewById(R.id.savetodisk);
 		play.setImageResource(R.drawable.play_drawable);
 		save.setImageResource(R.drawable.savetodisk_drawable);
 	}
+	
+	OnClickListener accept;
+	private void badError() {
+	    new AlertDialog.Builder(this)
+            .setMessage("Unable to correctly communicate with the server.  " +
+            		"Check your Internet connection or try another image.")
+            .setPositiveButton("OK", accept)
+            .show();
+    }
+	
 
 	/*
 	 * This is called by the Play button. Plays the midi file returned by
