@@ -140,10 +140,6 @@ public class RunAudiveris extends HttpServlet {
 	    // Set up the response page
         res.setContentType("text/html");
         PrintWriter out = res.getWriter();
-        out.println("<html><head><title>Run Audiveris</title>");
-        out.println("\t<style>body { font-family: 'Lucida Grande', " +
-                    "'Lucida Sans Unicode';font-size: 13px; }</style>");
-        out.println("</head><body>"); 
 	    
 	    try {
 	        // Load the image
@@ -156,22 +152,21 @@ public class RunAudiveris extends HttpServlet {
 	                // Execute Audiveris
 	                executeAudiveris();
 	                String path = "http://gradgrind.erso.berkeley.edu/midi/" + fileName + ".mid";
-	                out.println("Midi is at: <a href=\""+path+"\">"+path+"</a>");
+	                out.println(path);
 	            } catch (IOException e) {
-	                out.println("Audiveris could not be run.");
+	                out.println("ERROR");
 	                e.printStackTrace();
 	            }
 	        } catch(IOException e) { // writeScript failed
-	            out.println("run.script could not be written.");
+	            out.println("ERROR");
 	            e.printStackTrace();
 	        }
 	    } catch (Exception e) { // loadImage failed
-	        out.println("Image could not be uploaded.");
+	        out.println("ERROR");
 	        e.printStackTrace();
 	    }
         
         // Finish up
-        out.println("</body></html>");
         out.close();
 	}
 
@@ -181,9 +176,7 @@ public class RunAudiveris extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	    res.setContentType("text/html");
 	    PrintWriter out = res.getWriter();
-	    out.println("<html><head></head><body>");
-	    out.println("You need to POST an image to this form!  GET doesn't work. <br />");
-	    out.println("</body></html>");
+	    out.println("ERROR");
 	    out.close();
 	}
 	    
