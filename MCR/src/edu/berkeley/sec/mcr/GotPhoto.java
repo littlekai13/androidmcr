@@ -21,6 +21,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface.OnClickListener;
@@ -35,8 +36,10 @@ import android.os.Message;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 /**
  * This Activity takes in a URI for a photo. It displays the photo. It has
@@ -49,6 +52,7 @@ public class GotPhoto extends Activity {
 	private Uri musicPhotoUri;
 	private boolean readPressed;
 	private boolean broken;
+	private ProgressDialog pd;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -81,14 +85,10 @@ public class GotPhoto extends Activity {
 			i.setImageBitmap(bmp);
 		} catch (FileNotFoundException ex) {
 			readPressed = true;
-			broken = true;
 			ImageButton read = (ImageButton) this
                 .findViewById(R.id.transform_local);
 			read.setImageResource(R.drawable.read_gray);
-			new AlertDialog.Builder(this)
-			    .setMessage("Unable to load that photo :(")
-			    .setPositiveButton("OK", accept)
-			    .show();
+			badError("Unable to load that photo, please choose another");
 		}
 
 	}
@@ -103,6 +103,8 @@ public class GotPhoto extends Activity {
 		ImageButton read = (ImageButton) this
 				.findViewById(R.id.transform_local);
 		read.setImageResource(R.drawable.read_gray);
+		
+		pd = ProgressDialog.show(this, "Reading file", "Getting file data", true, false);
 
 		Thread t = new Thread() {
 			public void run() {
@@ -128,7 +130,9 @@ public class GotPhoto extends Activity {
 							tmpFile.close();
 					}
 					// Send it
+					progressHandler.sendEmptyMessage(1);
 					HttpClient client = new DefaultHttpClient();
+					String response;
 					if (imageFile.exists()) {
 						Map postData = new HashMap();
 						Map postDataFiles = new HashMap();
@@ -138,40 +142,51 @@ public class GotPhoto extends Activity {
 										client,
 										"http://gradgrind.erso.berkeley.edu:8080/Audiveris/RunAudiveris",
 										postData, postDataFiles);
-						Log.v("Debug", httpData.data);
+						// Check the response URL
+						progressHandler.sendEmptyMessage(2);
+						response = httpData.data.substring(0, httpData.data.length()-1);
 					} else {
 						Log.v("Debug", "File not found "
 								+ imageFile.getAbsolutePath());
 						throw new Exception();
 					}
-
+					
 					// Download the MIDI file from the response
-					URL url = new URL(
-							"http://gradgrind.erso.berkeley.edu/midi/example_1701664456.png.mid");
-					File midiFile = new File(getFilesDir()
-							+ "/example_650415305.png.mid");
-					URLConnection ucon = url.openConnection();
-					InputStream is = ucon.getInputStream();
-					BufferedInputStream bis = new BufferedInputStream(is);
-					ByteArrayBuffer baf = new ByteArrayBuffer(50);
-					int c = 0;
-					while ((c = bis.read()) != -1) {
-						baf.append((byte) c);
+					if (response == null || response.equals("ERROR")) {
+					    throw new Exception();
+					} else if (response.substring(0, 40).equals("http://gradgrind.erso.berkeley.edu/midi/")) {  
+					    URL url = new URL(response);
+					    File midiFile = new File(getFilesDir()
+					            + "/" + url.getFile());
+					    Thread.sleep(10000); // give server time to write file to disk
+					    progressHandler.sendEmptyMessage(3);
+					    URLConnection ucon = url.openConnection();
+					    InputStream is = ucon.getInputStream();
+					    BufferedInputStream bis = new BufferedInputStream(is);
+					    ByteArrayBuffer baf = new ByteArrayBuffer(50);
+					    int c = 0;
+					    while ((c = bis.read()) != -1) {
+					        baf.append((byte) c);
+					    }
+					    FileOutputStream fos = new FileOutputStream(midiFile);
+					    fos.write(baf.toByteArray());
+					    fos.close();
+					    midiFileUri = Uri.fromFile(midiFile);
+					    fd = openFileInput(url.getFile()).getFD();
+					} else {
+					    throw new Exception();
 					}
-					FileOutputStream fos = new FileOutputStream(midiFile);
-					fos.write(baf.toByteArray());
-					fos.close();
-					midiFileUri = Uri.fromFile(midiFile);
-					fd = openFileInput("example_650415305.png.mid").getFD();
 				} catch (Exception e) {
 				    broken = true;
 					Log.v("Debug", "EXCEPTION! " + e.getMessage());
 					e.printStackTrace();
+					progressHandler.sendEmptyMessage(0);
 					mHandler.post(mBadError);
 				}
 				Log.v("Debug", "Done with worker thread");
 				if (!broken) {
 				    mHandler.post(mUpdateGUI);
+				    progressHandler.sendEmptyMessage(0);
 				}
 			}
 		};
@@ -190,6 +205,20 @@ public class GotPhoto extends Activity {
 	        badError();
 	    }
 	};
+	final Handler progressHandler = new Handler() {
+	    public void handleMessage(Message msg) {
+	        if (msg.what == 0) {
+	            pd.dismiss();
+	        } else if (msg.what == 1) {
+	            pd.setMessage("Uploading image file");
+	        } else if (msg.what == 2) {
+	            pd.setMessage("Server is processing");
+	        } else if (msg.what == 3) {
+	            pd.setMessage("Downloading MIDI file");
+	        }
+	        
+	    }
+	};
 
 	private void updateGUI() {
 		ImageButton play = (ImageButton) this.findViewById(R.id.play);
@@ -201,11 +230,19 @@ public class GotPhoto extends Activity {
 	OnClickListener accept;
 	private void badError() {
 	    new AlertDialog.Builder(this)
-            .setMessage("Unable to correctly communicate with the server.  " +
+            .setMessage("Unable to correctly communicate with the server. " +
             		"Check your Internet connection or try another image.")
             .setPositiveButton("OK", accept)
             .show();
     }
+	
+	private void badError(String message) {
+	    broken = true;
+	    new AlertDialog.Builder(this)
+        .setMessage(message)
+        .setPositiveButton("OK", accept)
+        .show();
+	}
 	
 
 	/*
@@ -224,19 +261,22 @@ public class GotPhoto extends Activity {
 			} catch (IllegalArgumentException e) {
 				Log.v("Debug", "Illegal argument exception");
 				e.printStackTrace();
+				badError("Error with music player");
 			} catch (IllegalStateException e) {
 				Log.v("Debug", "Illegal state exception");
 				e.printStackTrace();
+				badError("Error with music player");
 			} catch (IOException e) {
 				Log.v("Debug", "IOexception");
 				e.printStackTrace();
+				badError("Error with music player");
 			} catch (Exception e) {
 				Log.v("Debug", "don't know why!?");
 				e.printStackTrace();
+				badError("Error with music player");
 			}
 		} else {
-			// What should we do if the user hasn't transformed anything yet?
-			Log.v("Debug", "SOMETHING WENT HORRIBLY WRONG");
+			badError("Error reading MIDI file");
 		}
 	}
 
