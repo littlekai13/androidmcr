@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+
 public class GUI extends Activity {
 	/** Called when the activity is first created. */
 	@Override
@@ -14,9 +15,10 @@ public class GUI extends Activity {
 		setContentView(R.layout.main);
 	}
 
-	static final int TRANSFORM = 97;
 	static final int LOAD_PHOTO = 98;
 	static final int BROWSE_MUSIC = 99;
+	static final int TAKE_PHOTO = 97;
+	static final int SHARE_MUSIC =96;
 
 	/*
 	 * This is called by the "Load photo from library" button. It calls up the
@@ -28,13 +30,6 @@ public class GUI extends Activity {
 		startActivityForResult(picker, LOAD_PHOTO);
 	}
 
-	public void loadPhotoCallback(Intent data) {
-		Uri thePhoto = data.getData();
-		Intent transformer = new Intent(GUI.this, GotPhoto.class);
-		transformer.putExtra("thePhoto", thePhoto);
-		startActivityForResult(transformer, TRANSFORM);
-	}
-
 	/*
 	 * This is called by the "Saved music" button. It calls up the music chooser
 	 * gallery. The resulting file is sent to onActivity Result.
@@ -42,10 +37,35 @@ public class GUI extends Activity {
 	public void browseMusic(View v) {
 		Intent browser = new Intent(Intent.ACTION_GET_CONTENT);
 		browser.setType("audio/mid");
-		// When back button pressed, we should get RESULT_CANCELED
-		// result
-		startActivityForResult(browser, BROWSE_MUSIC);
+		startActivityForResult(browser, BROWSE_MUSIC);	
 	}
+
+	/*
+	 * This is called by the "Share music" button. It allows 
+	 * you to email something
+	 */
+	
+	public void shareMusic(View v) {   
+		Intent getsomethingtoemail = new Intent(Intent.ACTION_GET_CONTENT);
+		getsomethingtoemail.setType("audio/mid");
+		startActivityForResult(getsomethingtoemail, SHARE_MUSIC);
+		// Or to just implement email directly from the button:
+		//Intent emailIntent = new Intent(Intent.ACTION_SEND);
+		//emailIntent.setType("plain/text");		
+		//emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this music");
+		//emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Sent from my Android's Music Recognition App."); 
+		//startActivity(Intent.createChooser(emailIntent, "Send mail with...")); 
+	}
+
+	
+	/*
+	 * This is called by the "Take new photo" button. It calls up the camera.
+	 * The resulting photo is sent to onActivityResult.
+	 */
+	// public void takePhoto(View v) {
+	// Intent camera = new Intent(Intent.ACTION_CAMERA_BUTTON);
+	// startActivityForResult(camera, TAKE_PHOTO);
+	// }
 
 	/*
 	 * Called when the user picks a photo from the photo gallery. Passes the URL
@@ -57,35 +77,40 @@ public class GUI extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == LOAD_PHOTO) {
 			if (resultCode == RESULT_OK) {
-				loadPhotoCallback(data);
-				/*
-				 * Uri thePhoto = data.getData(); Intent i = new
-				 * Intent(GUI.this, GotPhoto.class); i.putExtra("thePhoto",
-				 * thePhoto);
-				 * 
-				 * startActivityForResult(i, TRANSFORM);
-				 */
-			}
-		}
-
-		// Came back from GotPhoto.
-		else if (requestCode == TRANSFORM) {
-			if (resultCode == RESULT_OK) {
-				// I don't think we'll ever get here since we only return by
-				// pressing back button.
-			} else if (resultCode == RESULT_CANCELED) {
-				// Back button was pressed.
-
+				Uri thePhoto = data.getData();
+				Intent i = new Intent(GUI.this, GotPhoto.class);
+				i.putExtra("thePhoto", thePhoto);
+				startActivity(i);
 			}
 		}
 		// Go to nice music player.
-		else if (requestCode == BROWSE_MUSIC) {
-			if (resultCode == RESULT_OK) {
+		if (requestCode == BROWSE_MUSIC) {
+			if (resultCode == RESULT_OK) {			
 				Uri midiFile = data.getData();
 				Intent i = new Intent(Intent.ACTION_VIEW);
 				// i.setType("audio");
 				i.setData(midiFile);
 				startActivity(i);
+			}
+		}
+		// Next step is transform the photo.
+		if (requestCode == TAKE_PHOTO) {
+			Uri thePhoto = data.getData();
+			Intent i = new Intent(GUI.this, GotPhoto.class);
+			i.putExtra("thePhoto", thePhoto);
+			startActivity(i);
+		}
+		// Share music
+		if (requestCode == SHARE_MUSIC) {	
+			if (resultCode == RESULT_OK) {
+				Uri selectedFile = data.getData();
+				Intent emailIntent = new Intent(Intent.ACTION_SEND);
+				emailIntent.setType("plain/text");		
+				emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this music");
+				emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Sent from my Android's Music Recognition App."); 
+				//if you want to put in an email address: i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"blah@blah.com"});
+				emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, selectedFile);
+				startActivity(Intent.createChooser(emailIntent, "Send mail with..."));        			
 			}
 		}
 	}
