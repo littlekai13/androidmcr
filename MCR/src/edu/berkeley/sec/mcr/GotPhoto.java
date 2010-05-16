@@ -112,7 +112,8 @@ public class GotPhoto extends Activity {
 							.openAssetFileDescriptor(musicPhotoUri, "r");
 					FileChannel orig = thePhoto.createInputStream()
 							.getChannel();
-					Log.v("Debug",musicPhotoUri.getPath());
+					// NOTE THAT WE ONLY HANDLE JPGS RIGHT NOW
+					// I can't figure out how to find out the file type!
 					File imageFile = File.createTempFile("musicImages", ".jpg");
 					FileChannel tmpFile = new FileOutputStream(imageFile)
 							.getChannel();
