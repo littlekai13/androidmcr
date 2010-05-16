@@ -17,7 +17,6 @@ public class GUI extends Activity {
 
 	static final int LOAD_PHOTO = 98;
 	static final int BROWSE_MUSIC = 99;
-	static final int TAKE_PHOTO = 97;
 	static final int SHARE_MUSIC =96;
 
 	/*
@@ -57,24 +56,8 @@ public class GUI extends Activity {
 		//startActivity(Intent.createChooser(emailIntent, "Send mail with...")); 
 	}
 
-	
-	/*
-	 * This is called by the "Take new photo" button. It calls up the camera.
-	 * The resulting photo is sent to onActivityResult.
-	 */
-	// public void takePhoto(View v) {
-	// Intent camera = new Intent(Intent.ACTION_CAMERA_BUTTON);
-	// startActivityForResult(camera, TAKE_PHOTO);
-	// }
-
-	/*
-	 * Called when the user picks a photo from the photo gallery. Passes the URL
-	 * of the file to the GotPhoto activity.
-	 * 
-	 * @see android.app.Activity#onActivityResult(int, int,
-	 * android.content.Intent)
-	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    // Load the photo & transform it
 		if (requestCode == LOAD_PHOTO) {
 			if (resultCode == RESULT_OK) {
 				Uri thePhoto = data.getData();
@@ -92,13 +75,6 @@ public class GUI extends Activity {
 				i.setData(midiFile);
 				startActivity(i);
 			}
-		}
-		// Next step is transform the photo.
-		if (requestCode == TAKE_PHOTO) {
-			Uri thePhoto = data.getData();
-			Intent i = new Intent(GUI.this, GotPhoto.class);
-			i.putExtra("thePhoto", thePhoto);
-			startActivity(i);
 		}
 		// Share music
 		if (requestCode == SHARE_MUSIC) {	
