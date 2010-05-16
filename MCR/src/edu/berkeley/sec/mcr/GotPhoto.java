@@ -112,6 +112,7 @@ public class GotPhoto extends Activity {
 							.openAssetFileDescriptor(musicPhotoUri, "r");
 					FileChannel orig = thePhoto.createInputStream()
 							.getChannel();
+					Log.v("Debug",musicPhotoUri.getPath());
 					File imageFile = File.createTempFile("musicImages", ".jpg");
 					FileChannel tmpFile = new FileOutputStream(imageFile)
 							.getChannel();
