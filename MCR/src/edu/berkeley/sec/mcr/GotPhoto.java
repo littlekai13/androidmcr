@@ -21,6 +21,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -36,11 +37,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore.Audio.Media;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This Activity takes in a URI for a photo. It displays the photo. It has
@@ -54,6 +59,10 @@ public class GotPhoto extends Activity {
 	private ProgressDialog pd;
 	private FileDescriptor fd;
 	private String midiPath;
+	
+	private String midiAlbum;
+	private boolean saved;
+	private Uri savePath;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -63,7 +72,10 @@ public class GotPhoto extends Activity {
 		setContentView(R.layout.gotphoto);
 		readPressed = false;
 		broken = false;
-		midiPath = null;
+		
+		// file naming
+		midiAlbum = "Made by Android Music Recognition";
+		saved = false;
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
@@ -297,16 +309,34 @@ public class GotPhoto extends Activity {
 		if (readPressed == false || broken == true) { return; }
 
 		if (fd != null) {
-			ContentValues cv = new ContentValues(3);
-			cv.put(Media.DISPLAY_NAME, "new record");
-			cv.put(Media.TITLE, "Doot Doot Doot");
-			cv.put(Media.MIME_TYPE, "audio/mid");
-			cv.put(Media.DATA, midiPath);
-
-			ContentResolver cr = getContentResolver();
-			Uri insertedUri = cr.insert(Media.EXTERNAL_CONTENT_URI, cv);
+		    
+		    OnReadyListener comm = new OnReadyListener();
+		    SaveDialog saveDialog = new SaveDialog(this, "",comm);
+	        saveDialog.show();
+	        // The actual saving happens on OnReadyListener.ready, since that's
+	        // when we have the values
 		} else {
 			Log.v("Debug", "User is trying to save w/o first transforming");
+			badError("Error saving the file");
 		}
 	}
+	
+	private class OnReadyListener implements SaveDialog.ReadyListener {
+        public void ready(String title, String artist) {
+            ContentValues cv = new ContentValues(3);
+            cv.put(Media.DISPLAY_NAME, title);
+            cv.put(Media.TITLE, title);
+            cv.put(Media.MIME_TYPE, "audio/mid");
+            cv.put(Media.ALBUM, midiAlbum);
+            cv.put(Media.ARTIST, artist);
+            cv.put(Media.DATA, midiPath);
+            if (!saved) {
+                savePath = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, cv);
+                saved = true;
+            } else {
+                getContentResolver().update(savePath, cv, null, null);
+            }
+        }
+    }
+	
 }
