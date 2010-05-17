@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -47,12 +48,12 @@ import android.widget.ProgressBar;
  */
 public class GotPhoto extends Activity {
 
-	private Uri midiFileUri;
-	private FileDescriptor fd;
 	private Uri musicPhotoUri;
 	private boolean readPressed;
 	private boolean broken;
 	private ProgressDialog pd;
+	private FileDescriptor fd;
+	private String midiPath;
 
 	/*
 	 * Expects an image Uri to be passed in as an extra, named "thePhoto".
@@ -62,6 +63,7 @@ public class GotPhoto extends Activity {
 		setContentView(R.layout.gotphoto);
 		readPressed = false;
 		broken = false;
+		midiPath = null;
 
 		// Get photo URI
 		Bundle extras = getIntent().getExtras();
@@ -108,6 +110,7 @@ public class GotPhoto extends Activity {
 
 		Thread t = new Thread() {
 			public void run() {
+			    File imageFile = null;
 				try {
 					// Get the image
 					AssetFileDescriptor thePhoto = getContentResolver()
@@ -116,7 +119,7 @@ public class GotPhoto extends Activity {
 							.getChannel();
 					// NOTE THAT WE ONLY HANDLE JPGS RIGHT NOW
 					// I can't figure out how to find out the file type!
-					File imageFile = File.createTempFile("musicImages", ".jpg");
+					imageFile = File.createTempFile("musicImages", ".jpg");
 					FileChannel tmpFile = new FileOutputStream(imageFile)
 							.getChannel();
 					try {
@@ -126,7 +129,7 @@ public class GotPhoto extends Activity {
 					} finally {
 						if (orig != null)
 							orig.close();
-						if (tmpFile != null)
+						if (tmpFile != null) 
 							tmpFile.close();
 					}
 					// Send it
@@ -156,8 +159,9 @@ public class GotPhoto extends Activity {
 					    throw new Exception();
 					} else if (response.substring(0, 40).equals("http://gradgrind.erso.berkeley.edu/midi/")) {  
 					    URL url = new URL(response);
-					    File midiFile = new File(getFilesDir()
-					            + "/" + url.getFile());
+					    String urlStr = url.toString();
+					    String fileName = urlStr.substring(urlStr.lastIndexOf('/')+1, urlStr.length());
+					    FileOutputStream fos = openFileOutput(fileName, MODE_WORLD_READABLE);
 					    Thread.sleep(10000); // give server time to write file to disk
 					    progressHandler.sendEmptyMessage(3);
 					    URLConnection ucon = url.openConnection();
@@ -168,11 +172,10 @@ public class GotPhoto extends Activity {
 					    while ((c = bis.read()) != -1) {
 					        baf.append((byte) c);
 					    }
-					    FileOutputStream fos = new FileOutputStream(midiFile);
 					    fos.write(baf.toByteArray());
 					    fos.close();
-					    midiFileUri = Uri.fromFile(midiFile);
-					    fd = openFileInput(url.getFile()).getFD();
+					    fd = openFileInput(fileName).getFD();
+					    midiPath = getFilesDir() + "/" + fileName;
 					} else {
 					    throw new Exception();
 					}
@@ -182,8 +185,11 @@ public class GotPhoto extends Activity {
 					e.printStackTrace();
 					progressHandler.sendEmptyMessage(0);
 					mHandler.post(mBadError);
+				} finally {
+				    if (imageFile != null) {
+				        imageFile.delete();
+				    }
 				}
-				Log.v("Debug", "Done with worker thread");
 				if (!broken) {
 				    mHandler.post(mUpdateGUI);
 				    progressHandler.sendEmptyMessage(0);
@@ -291,64 +297,14 @@ public class GotPhoto extends Activity {
 		if (readPressed == false || broken == true) { return; }
 
 		if (fd != null) {
-
-			// To add audio to content provider.
-			// First provide the meta data. (cv.put...)
-			// Then add the metadata to the CP (cr.insert(...))
-			// This returns a URI to the newly inserted record.
-			// You use that URI to add in the real data
-			// (cr.openOutputStream(insertedUri))
-			// That should do it.
-
-			// In general, anytime you access the contentresolver (i.e. the DB
-			// w/all the media),
-			// You reference your particular record by providing the URI to it
-			// as the first arg.
-
 			ContentValues cv = new ContentValues(3);
-			cv.put(Media.DISPLAY_NAME, "transformed twinkle");
-			cv.put(Media.TITLE, "Twinkle Twinkle Little Star");
+			cv.put(Media.DISPLAY_NAME, "new record");
+			cv.put(Media.TITLE, "Doot Doot Doot");
 			cv.put(Media.MIME_TYPE, "audio/mid");
-			// This seems to be necessary to keep cr.insert from failing. It
-			// should get overwriiten later in the try/catch block.
-
-			// Adrienne, here's why I think it's failing. I have to
-			// put in this fake data to keep it from crashing, andit should get
-			// overwritten
-			// in the try/catch, but it looks like it's throwing a filenotfound
-			// exception I think on the cr.openOutputStream(insertedUri) part.
-			// If you fix that, the rest of it might magically work.
-			cv.put(Media.DATA, "fake/data");
+			cv.put(Media.DATA, midiPath);
 
 			ContentResolver cr = getContentResolver();
 			Uri insertedUri = cr.insert(Media.EXTERNAL_CONTENT_URI, cv);
-
-			if (insertedUri == null) {
-				// Well that sucks. No new content entry.
-			} else {
-
-				try {
-
-					FileInputStream fis = new FileInputStream(fd);
-					BufferedInputStream bis = new BufferedInputStream(fis);
-
-					ByteArrayBuffer baf = new ByteArrayBuffer(50);
-					int c = 0;
-					while ((c = bis.read()) != -1) {
-						baf.append((byte) c);
-					}
-
-					OutputStream os = cr.openOutputStream(insertedUri);
-					os.write(baf.toByteArray());
-					os.flush();
-					os.close();
-
-				} catch (Exception ex) {
-					// Sucks to be here.
-					Log.v("Debug", "Couldn't write audio file");
-				}
-
-			}
 		} else {
 			Log.v("Debug", "User is trying to save w/o first transforming");
 		}
