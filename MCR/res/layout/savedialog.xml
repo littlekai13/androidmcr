@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <EditText 	android:id="@+id/EditText01" 
+    			android:layout_height="wrap_content" 
+    			android:text="Title" 
+    			android:layout_width="250dip">
+    </EditText>
+    
+    <EditText 	android:id="@+id/EditText02" 
+    			android:layout_height="wrap_content" 
+    			android:text="Artist" 
+    			android:layout_width="250dip">
+    </EditText>
+
+    <Button android:id="@+id/Button01" 
+    		android:layout_width="50dip"
+        	android:layout_height="wrap_content" 
+        	android:text="OK">
+    </Button>
+
+</LinearLayout>
